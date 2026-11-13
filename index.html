@@ -332,129 +332,73 @@
 
         document.getElementById("welcome").textContent =
             "Hello, " + patientName + "! How can we help today?";
-    }
 
-    const DOCS = [
-        {
-            id: 1,
-            n: "Dr. Palesa Mokoena",
-            s: "General Medicine",
-            loc: "Block A, Room 12",
-            exp: 12,
-            about: "Family health, check-ups and chronic care."
-        },
-        {
-            id: 2,
-            n: "Dr. Thabo Letsie",
-            s: "Cardiology",
-            loc: "Block B, Room 4",
-            exp: 18,
-            about: "Heart health, blood pressure and ECG tests."
-        },
-        {
-            id: 3,
-            n: "Dr. Naledi Ramone",
-            s: "Paediatrics",
-            loc: "Children’s Wing, Room 2",
-            exp: 9,
-            about: "Care for babies, children and teenagers."
-        },
-        {
-            id: 4,
-            n: "Dr. Karabo Sehloho",
-            s: "Dermatology",
-            loc: "Block C, Room 7",
-            exp: 11,
-            about: "Skin, hair and nail conditions."
-        },
-        {
-            id: 5,
-            n: "Dr. Lineo Matsoso",
-            s: "Gynaecology",
-            loc: "Women’s Clinic, Room 3",
-            exp: 15,
-            about: "Women’s health and antenatal care."
-        },
-        {
-            id: 6,
-            n: "Dr. Tumelo Khama",
-            s: "General Medicine",
-            loc: "Block A, Room 15",
-            exp: 7,
-            about: "General consultations and follow-ups."
-        },
-        {
-            id: 7,
-            n: "Dr. Mpho Rakoto",
-            s: "Orthopaedics",
-            loc: "Block B, Room 9",
-            exp: 14,
-            about: "Bones, joints and sports injuries."
-        },
-        {
-            id: 8,
-            n: "Dr. Ayanda Nkosi",
-            s: "Eye Clinic",
-            loc: "Block C, Room 1",
-            exp: 10,
-            about: "Eye tests and eye infections."
+        const DOCS = [
+            { id: 1, n: "Dr. Palesa Mokoena", s: "General Medicine", loc: "Block A, Room 12" },
+            { id: 2, n: "Dr. Thabo Letsie", s: "Cardiology", loc: "Block B, Room 4" },
+            { id: 3, n: "Dr. Naledi Ramone", s: "Paediatrics", loc: "Children’s Wing, Room 2" },
+            { id: 4, n: "Dr. Karabo Sehloho", s: "Dermatology", loc: "Block C, Room 7" },
+            { id: 5, n: "Dr. Lineo Matsoso", s: "Gynaecology", loc: "Women’s Clinic, Room 3" },
+            { id: 6, n: "Dr. Tumelo Khama", s: "General Medicine", loc: "Block A, Room 15" },
+            { id: 7, n: "Dr. Mpho Rakoto", s: "Orthopaedics", loc: "Block B, Room 9" },
+            { id: 8, n: "Dr. Ayanda Nkosi", s: "Eye Clinic", loc: "Block C, Room 1" }
+        ];
+
+        function getAppointments() {
+            return JSON.parse(localStorage.getItem("hope-appointments") || "[]");
         }
-    ];
+
+        function doctor(id) {
+            return DOCS.find(d => d.id == id);
+        }
+
+        function dateLabel(date) {
+            return new Date(date + "T12:00:00").toLocaleDateString("en-GB", {
+                weekday: "short",
+                day: "numeric",
+                month: "short",
+                year: "numeric"
+            });
+        }
+
+        const all = getAppointments()
+            .filter(a => a.status !== "Cancelled" && a.status !== "Completed")
+            .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+
+        const el = document.getElementById("next");
+
+        if (all.length) {
+            const a = all[0];
+            const d = doctor(a.doc || a.doctorId);
+
+            if (d) {
+                el.innerHTML = `
+                    <h3>${d.n}</h3>
+                    <p><span class="tag">${d.s}</span></p>
+                    <p>${dateLabel(a.date)} · ${a.time}</p>
+                    <p class="muted">${d.loc}</p>
+                    <a class="btn" href="appointments.html">Manage Appointment</a>
+                `;
+            } else {
+                el.innerHTML = `
+                    <p>Your next appointment is scheduled for ${dateLabel(a.date)} at ${a.time}.</p>
+                    <a class="btn" href="appointments.html">Manage Appointment</a>
+                `;
+            }
+        } else {
+            el.innerHTML = `
+                <p>You have no upcoming appointments.</p>
+                <a class="btn" href="find-doctor.html">Book an Appointment</a>
+            `;
+        }
+    }
 
     function logout() {
         localStorage.removeItem("hope-current-user");
         localStorage.removeItem("loggedInUser");
         localStorage.removeItem("currentUser");
 
-        window.location.href = "sign-in.html";
-    }
-
-    function getAppointments() {
-        return JSON.parse(localStorage.getItem("hope-appointments") || "[]");
-    }
-
-    function doctor(id) {
-        return DOCS.find(d => d.id == id);
-    }
-
-    function dateLabel(date) {
-        return new Date(date + "T12:00:00").toLocaleDateString("en-GB", {
-            weekday: "short",
-            day: "numeric",
-            month: "short",
-            year: "numeric"
-        });
-    }
-
-    const all = getAppointments()
-        .filter(a => a.status !== "Cancelled" && a.status !== "Completed")
-        .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
-
-    const el = document.getElementById("next");
-
-    if (all.length) {
-        const a = all[0];
-        const d = doctor(a.doc || a.doctorId);
-
-        if (d) {
-            el.innerHTML = `
-                <h3>${d.n}</h3>
-                <p><span class="tag">${d.s}</span></p>
-                <p>${dateLabel(a.date)} · ${a.time}</p>
-                <p class="muted">${d.loc}</p>
-                <a class="btn" href="appointments.html">Manage Appointment</a>
-            `;
-        } else {
-            el.innerHTML = `
-                <p>Your next appointment is scheduled for ${dateLabel(a.date)} at ${a.time}.</p>
-                <a class="btn" href="appointments.html">Manage Appointment</a>
-            `;
-        }
-    } else {
-        el.innerHTML = `
-            <p>You have no upcoming appointments.</p>
-            <a class="btn" href="find-doctor.html">Book an Appointment</a>
-        `;
+        window.location.replace("sign-in.html");
     }
 </script>
 
