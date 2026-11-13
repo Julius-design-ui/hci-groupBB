@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Home | Hope Hospital</title>
-    <meta http-equiv="refresh" content="0; url=sign-in.html">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
 
@@ -265,7 +264,7 @@
 
 <main>
     <section class="hero">
-        <h1>Hello, how can we help today?</h1>
+        <h1 id="welcome">Hello, how can we help today?</h1>
 
         <p>Find a doctor and book a hospital visit in a few simple steps.</p>
 
@@ -312,6 +311,29 @@
 </main>
 
 <script>
+    const currentUser = JSON.parse(
+        localStorage.getItem("hope-current-user") ||
+        localStorage.getItem("loggedInUser") ||
+        localStorage.getItem("currentUser") ||
+        "null"
+    );
+
+    if (!currentUser) {
+        window.location.replace("sign-in.html");
+    } else if (String(currentUser.role || "").toLowerCase() === "doctor") {
+        window.location.replace("doctor-home.html");
+    } else {
+        const patientName =
+            currentUser.fullname ||
+            currentUser.fullName ||
+            currentUser.name ||
+            currentUser.username ||
+            "there";
+
+        document.getElementById("welcome").textContent =
+            "Hello, " + patientName + "! How can we help today?";
+    }
+
     const DOCS = [
         {
             id: 1,
@@ -379,38 +401,16 @@
         }
     ];
 
-    const TIMES = [
-        "08:30",
-        "09:00",
-        "09:30",
-        "10:30",
-        "11:00",
-        "13:30",
-        "14:00",
-        "15:30",
-        "16:00"
-    ];
-
     function logout() {
         localStorage.removeItem("hope-current-user");
         localStorage.removeItem("loggedInUser");
+        localStorage.removeItem("currentUser");
+
         window.location.href = "sign-in.html";
     }
 
     function getAppointments() {
         return JSON.parse(localStorage.getItem("hope-appointments") || "[]");
-    }
-
-    function saveAppointments(a) {
-        localStorage.setItem("hope-appointments", JSON.stringify(a));
-    }
-
-    function getReminders() {
-        return JSON.parse(localStorage.getItem("hope-reminders") || "[]");
-    }
-
-    function saveReminders(a) {
-        localStorage.setItem("hope-reminders", JSON.stringify(a));
     }
 
     function doctor(id) {
@@ -426,19 +426,6 @@
         });
     }
 
-    function makeReminder(text) {
-        let r = getReminders();
-
-        r.unshift({
-            id: Date.now(),
-            text,
-            when: "Just now",
-            unread: true
-        });
-
-        saveReminders(r);
-    }
-
     const all = getAppointments()
         .filter(a => a.status !== "Cancelled" && a.status !== "Completed")
         .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
@@ -447,7 +434,7 @@
 
     if (all.length) {
         const a = all[0];
-        const d = doctor(a.doc);
+        const d = doctor(a.doc || a.doctorId);
 
         if (d) {
             el.innerHTML = `
