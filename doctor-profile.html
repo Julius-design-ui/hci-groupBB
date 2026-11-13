@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doctor Profile | Hope Hospital</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Figtree',sans-serif}
+body{background:#f7f4fc;color:#29243a}
+.sidebar{width:245px;height:100vh;position:fixed;background:white;padding:28px 18px;border-right:1px solid #eee8f7}
+.logo{font-size:24px;font-weight:700;color:#7446d8;margin-bottom:32px}
+.logo span{color:#29243a}
+.sidebar a{display:block;text-decoration:none;color:#696477;padding:13px 14px;margin:6px 0;border-radius:10px}
+.sidebar a:hover,.sidebar a.active{background:#eee7fc;color:#7446d8}
+.main{margin-left:245px;padding:35px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px}
+.header h1{font-size:28px}
+.doctor-tag{background:white;padding:12px 18px;border-radius:12px;color:#7446d8;font-weight:600}
+.profile-banner{background:linear-gradient(120deg,#7446d8,#a78bfa);color:white;padding:30px;border-radius:16px;margin-bottom:25px;display:flex;align-items:center;gap:20px}
+.avatar{width:75px;height:75px;border-radius:50%;background:white;color:#7446d8;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700}
+.profile-banner h2{margin-bottom:8px}
+.section{background:white;padding:25px;border-radius:15px;box-shadow:0 4px 15px #e9e2f5;margin-bottom:25px}
+.section h2{margin-bottom:20px}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+label{display:block;font-size:14px;color:#696477;margin-bottom:8px}
+input,select{width:100%;padding:12px;border:1px solid #ddd4ef;border-radius:9px;outline:none;background:white}
+input:focus,select:focus{border-color:#7446d8}
+.field{margin-bottom:15px}
+button{border:none;padding:12px 20px;border-radius:9px;background:#7446d8;color:white;font-weight:600;cursor:pointer}
+button:hover{background:#5c32b5}
+.message{margin-top:15px;color:#168447}
+@media(max-width:900px){.sidebar{width:190px}.main{margin-left:190px;padding:20px}}
+@media(max-width:560px){.sidebar{position:relative;width:100%;height:auto}.sidebar a{display:inline-block}.main{margin-left:0}.form-grid{grid-template-columns:1fr}}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+<div class="logo">Hope <span>Hospital</span></div>
+<a href="doctor-home.html">Dashboard</a>
+<a href="doctor-appointments.html">My Appointments</a>
+<a href="doctor-patients.html">My Patients</a>
+<a href="staff-schedule2.html">My Schedule</a>
+<a href="doctor-reminders.html">Reminders</a>
+<a href="doctor-profile.html" class="active">My Profile</a>
+<a href="signin.html" onclick="signOut()">Sign Out</a>
+</div>
+
+<div class="main">
+
+<div class="header">
+<h1>My Profile</h1>
+<div class="doctor-tag">Doctor Account</div>
+</div>
+
+<div class="profile-banner">
+<div class="avatar">Dr</div>
+<div>
+<h2 id="profileName">Doctor</h2>
+<p>Medical Professional | Hope Hospital</p>
+</div>
+</div>
+
+<div class="section">
+<h2>Professional Information</h2>
+
+<form id="profileForm">
+<div class="form-grid">
+
+<div class="field">
+<label>Full Name</label>
+<input id="name" type="text" required>
+</div>
+
+<div class="field">
+<label>Email Address</label>
+<input id="email" type="email" required>
+</div>
+
+<div class="field">
+<label>Phone Number</label>
+<input id="phone" type="tel">
+</div>
+
+<div class="field">
+<label>Specialization</label>
+<select id="specialization">
+<option value="">Select Specialization</option>
+<option>General Practitioner</option>
+<option>Cardiologist</option>
+<option>Dermatologist</option>
+<option>Paediatrician</option>
+<option>Gynaecologist</option>
+<option>Orthopaedic</option>
+<option>Neurologist</option>
+<option>Other</option>
+</select>
+</div>
+
+<div class="field">
+<label>Hospital</label>
+<input type="text" value="Hope Hospital" readonly>
+</div>
+
+<div class="field">
+<label>Working Hours</label>
+<input id="hours" type="text" placeholder="e.g. 08:00 - 16:00">
+</div>
+
+</div>
+
+<button type="submit">Save Profile</button>
+<p class="message" id="message"></p>
+</form>
+</div>
+
+</div>
+
+<script>
+let user = localStorage.getItem("loggedInUser") || "Doctor";
+
+try {
+    user = JSON.parse(user);
+} catch(e) {
+    user = {name:user};
+}
+
+let doctorName = user.name || user.fullName || user.username || "Doctor";
+
+let profile = JSON.parse(localStorage.getItem("doctorProfile")) || {};
+
+document.getElementById("name").value = profile.name || doctorName;
+document.getElementById("email").value = profile.email || user.email || "";
+document.getElementById("phone").value = profile.phone || "";
+document.getElementById("specialization").value = profile.specialization || "";
+document.getElementById("hours").value = profile.hours || "";
+
+document.getElementById("profileName").textContent =
+    profile.name || doctorName;
+
+document.getElementById("profileForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    let updatedProfile = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        specialization: document.getElementById("specialization").value,
+        hours: document.getElementById("hours").value
+    };
+
+    localStorage.setItem("doctorProfile", JSON.stringify(updatedProfile));
+
+    document.getElementById("profileName").textContent = updatedProfile.name;
+    document.getElementById("message").textContent = "Profile saved successfully.";
+});
+
+function signOut() {
+    localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("currentUser");
+}
+</script>
+
+</body>
+</html>

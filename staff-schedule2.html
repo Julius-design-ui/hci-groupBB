@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Schedule | Hope Hospital</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Figtree',sans-serif}
+body{background:#f7f4fc;color:#29243a}
+.sidebar{width:245px;height:100vh;position:fixed;background:white;padding:28px 18px;border-right:1px solid #eee8f7}
+.logo{font-size:24px;font-weight:700;color:#7446d8;margin-bottom:32px}
+.logo span{color:#29243a}
+.sidebar a{display:block;text-decoration:none;color:#696477;padding:13px 14px;margin:6px 0;border-radius:10px}
+.sidebar a:hover,.sidebar a.active{background:#eee7fc;color:#7446d8}
+.main{margin-left:245px;padding:35px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px}
+.header h1{font-size:28px}
+.doctor-tag{background:white;padding:12px 18px;border-radius:12px;color:#7446d8;font-weight:600}
+.banner{background:linear-gradient(120deg,#7446d8,#a78bfa);color:white;padding:25px;border-radius:16px;margin-bottom:25px}
+.banner h2{margin-bottom:8px}
+.section{background:white;padding:25px;border-radius:15px;box-shadow:0 4px 15px #e9e2f5;margin-bottom:25px}
+.section h2{margin-bottom:20px}
+input[type="date"]{padding:12px;border:1px solid #ddd4ef;border-radius:9px;margin-bottom:20px}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{padding:14px;text-align:left;border-bottom:1px solid #eee8f7;font-size:14px}
+th{background:#f7f4fc;color:#7446d8}
+.table-wrap{overflow-x:auto}
+.status{padding:6px 10px;border-radius:20px;font-size:12px;font-weight:600}
+.Pending{background:#fff3d6;color:#a66a00}
+.Confirmed{background:#e3f8ec;color:#168447}
+.Completed{background:#eee7fc;color:#7446d8}
+.Cancelled{background:#ffe5e5;color:#c0392b}
+.empty{text-align:center;padding:25px;color:#888}
+@media(max-width:900px){.sidebar{width:190px}.main{margin-left:190px;padding:20px}}
+@media(max-width:560px){.sidebar{position:relative;width:100%;height:auto}.sidebar a{display:inline-block}.main{margin-left:0}}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+<div class="logo">Hope <span>Hospital</span></div>
+<a href="doctor-home.html">Dashboard</a>
+<a href="doctor-appointments.html">My Appointments</a>
+<a href="doctor-patients.html">My Patients</a>
+<a href="staff-schedule.html" class="active">My Schedule</a>
+<a href="doctor-reminders.html">Reminders</a>
+<a href="doctor-profile.html">My Profile</a>
+<a href="signin.html" onclick="signOut()">Sign Out</a>
+</div>
+
+<div class="main">
+
+<div class="header">
+<h1>My Schedule</h1>
+<div class="doctor-tag">Dr. <span id="doctorName">Doctor</span></div>
+</div>
+
+<div class="banner">
+<h2>Appointment Schedule</h2>
+<p>Check your consultation dates and times.</p>
+</div>
+
+<div class="section">
+<h2>Filter Schedule by Date</h2>
+<input type="date" id="dateFilter">
+</div>
+
+<div class="section">
+<h2>Scheduled Consultations</h2>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Patient</th>
+<th>Date</th>
+<th>Time</th>
+<th>Reason</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="scheduleTable"></tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+
+<script>
+let appointments = JSON.parse(localStorage.getItem("appointments")) || [];
+
+let user = localStorage.getItem("loggedInUser") || "Doctor";
+
+try {
+    user = JSON.parse(user);
+} catch(e) {
+    user = {name:user};
+}
+
+let doctorName = user.name || user.fullName || user.username || "Doctor";
+let doctorEmail = (user.email || "").toLowerCase();
+
+document.getElementById("doctorName").textContent = doctorName;
+
+function getDoctorAppointments() {
+    return appointments.filter(a => {
+        let name = (a.doctor || a.doctorName || a.selectedDoctor || "").toLowerCase();
+        let email = (a.doctorEmail || "").toLowerCase();
+
+        return name === doctorName.toLowerCase() ||
+               (doctorEmail && email === doctorEmail);
+    });
+}
+
+function displaySchedule() {
+    let selectedDate = document.getElementById("dateFilter").value;
+
+    let list = getDoctorAppointments();
+
+    if (selectedDate) {
+        list = list.filter(a => a.date === selectedDate);
+    }
+
+    list.sort((a,b) =>
+        (a.date + a.time).localeCompare(b.date + b.time)
+    );
+
+    let table = document.getElementById("scheduleTable");
+
+    if (list.length === 0) {
+        table.innerHTML = `
+        <tr><td colspan="5" class="empty">No appointments scheduled.</td></tr>`;
+        return;
+    }
+
+    table.innerHTML = list.map(a => `
+        <tr>
+        <td>${a.patient || a.patientName || "Patient"}</td>
+        <td>${a.date || "Not specified"}</td>
+        <td>${a.time || "Not specified"}</td>
+        <td>${a.reason || "Consultation"}</td>
+        <td><span class="status ${a.status || "Pending"}">${a.status || "Pending"}</span></td>
+        </tr>
+    `).join("");
+}
+
+function signOut() {
+    localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("currentUser");
+}
+
+document.getElementById("dateFilter").addEventListener("change", displaySchedule);
+
+displaySchedule();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,400 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Find a Doctor | Hope Hospital</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
+
+    <style>
+        :root {
+            --bg: #f7f4fc;
+            --card: #fff;
+            --ink: #1e1530;
+            --mute: #675c7d;
+            --p: #5b2c91;
+            --p2: #7b46b8;
+            --soft: #efe8f8;
+            --line: #ddd0ee;
+            --ok: #176b3a;
+            --okbg: #def3e5;
+            --bad: #a4262c;
+            --badbg: #fbe3e3
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font: 16px/1.5 Figtree, Arial, sans-serif
+        }
+
+        header {
+            background: var(--p);
+            color: white;
+            padding: 14px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 5
+        }
+
+        .bar {
+            max-width: 1100px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap
+        }
+
+        .brand {
+            font-size: 25px;
+            font-weight: 700
+        }
+
+        nav {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-left: auto
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 9px 12px;
+            border-radius: 10px
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: #ffffff30
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 25px auto;
+            padding: 0 20px 50px
+        }
+
+        h1 {
+            font-size: 32px;
+            margin: 0 0 8px
+        }
+
+        h2 {
+            font-size: 22px;
+            margin: 25px 0 12px
+        }
+
+        .sub {
+            color: var(--mute);
+            margin-top: 0
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 15px
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px
+        }
+
+        button,
+        .btn {
+            background: var(--p);
+            color: white;
+            border: 2px solid var(--p);
+            border-radius: 10px;
+            padding: 10px 16px;
+            min-height: 42px;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block
+        }
+
+        button.secondary,
+        .btn.secondary {
+            background: transparent;
+            color: var(--p)
+        }
+
+        button.danger {
+            background: transparent;
+            color: var(--bad);
+            border-color: var(--bad)
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--line);
+            border-radius: 10px;
+            background: white;
+            color: #1e1530;
+            font: inherit;
+            margin: 5px 0 14px
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 14px
+        }
+
+        .tag {
+            background: var(--soft);
+            color: var(--p);
+            padding: 3px 9px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px
+        }
+
+        .status {
+            font-weight: 700;
+            color: var(--ok)
+        }
+
+        .muted {
+            color: var(--mute);
+            font-size: 14px
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        @media(max-width:700px) {
+            nav {
+                margin-left: 0;
+                width: 100%;
+                justify-content: space-around
+            }
+
+            nav a {
+                font-size: 13px;
+                padding: 7px
+            }
+
+            main {
+                padding-bottom: 30px
+            }
+
+            h1 {
+                font-size: 27px
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="bar">
+            <div class="brand">♥ Hope Hospital</div>
+
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="find-doctor.html" class="active">Find Doctor</a>
+                <a href="appointments.html">Appointments</a>
+                <a href="reminders.html">Reminders</a>
+                <a href="staff-schedule.html">Staff Schedule</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <h1>Find a Doctor</h1>
+
+        <p class="sub">Search by doctor name or choose a specialty.</p>
+
+        <div class="card">
+            <label for="search">Doctor name</label>
+
+            <input id="search"
+                   type="search"
+                   placeholder="e.g. Mokoena">
+
+            <label for="specialty">Specialty</label>
+
+            <select id="specialty">
+                <option value="">All specialties</option>
+            </select>
+        </div>
+
+        <div id="results" class="grid"></div>
+    </main>
+
+    <script>
+        const DOCS = [
+            {
+                id: 1,
+                n: "Dr. Palesa Mokoena",
+                s: "General Medicine",
+                loc: "Block A, Room 12",
+                exp: 12,
+                about: "Family health, check-ups and chronic care."
+            },
+            {
+                id: 2,
+                n: "Dr. Thabo Letsie",
+                s: "Cardiology",
+                loc: "Block B, Room 4",
+                exp: 18,
+                about: "Heart health, blood pressure and ECG tests."
+            },
+            {
+                id: 3,
+                n: "Dr. Naledi Ramone",
+                s: "Paediatrics",
+                loc: "Children’s Wing, Room 2",
+                exp: 9,
+                about: "Care for babies, children and teenagers."
+            },
+            {
+                id: 4,
+                n: "Dr. Karabo Sehloho",
+                s: "Dermatology",
+                loc: "Block C, Room 7",
+                exp: 11,
+                about: "Skin, hair and nail conditions."
+            },
+            {
+                id: 5,
+                n: "Dr. Lineo Matsoso",
+                s: "Gynaecology",
+                loc: "Women’s Clinic, Room 3",
+                exp: 15,
+                about: "Women’s health and antenatal care."
+            },
+            {
+                id: 6,
+                n: "Dr. Tumelo Khama",
+                s: "General Medicine",
+                loc: "Block A, Room 15",
+                exp: 7,
+                about: "General consultations and follow-ups."
+            },
+            {
+                id: 7,
+                n: "Dr. Mpho Rakoto",
+                s: "Orthopaedics",
+                loc: "Block B, Room 9",
+                exp: 14,
+                about: "Bones, joints and sports injuries."
+            },
+            {
+                id: 8,
+                n: "Dr. Ayanda Nkosi",
+                s: "Eye Clinic",
+                loc: "Block C, Room 1",
+                exp: 10,
+                about: "Eye tests and eye infections."
+            }
+        ];
+
+        const specialty = document.getElementById("specialty");
+        const results = document.getElementById("results");
+
+        [...new Set(DOCS.map(d => d.s))]
+            .sort()
+            .forEach(s => {
+                const option = document.createElement("option");
+                option.value = s;
+                option.textContent = s;
+                specialty.appendChild(option);
+            });
+
+        function showDoctors() {
+            const term = document.getElementById("search").value.toLowerCase();
+            const sp = specialty.value;
+
+            const list = DOCS.filter(d =>
+                (d.n + " " + d.s + " " + d.about + " " + d.loc)
+                    .toLowerCase()
+                    .includes(term) &&
+                (!sp || d.s === sp)
+            );
+
+            results.innerHTML = "";
+
+            if (list.length === 0) {
+                results.innerHTML = `
+                    <div class="card">
+                        No doctors match your search.
+                        Try another name or specialty.
+                    </div>
+                `;
+                return;
+            }
+
+            list.forEach(d => {
+                const card = document.createElement("article");
+                card.className = "card";
+
+                const heading = document.createElement("h3");
+                heading.textContent = d.n;
+
+                const tag = document.createElement("p");
+                tag.innerHTML = `<span class="tag">${d.s}</span>`;
+
+                const about = document.createElement("p");
+                about.textContent = d.about;
+
+                const details = document.createElement("p");
+                details.className = "muted";
+                details.textContent =
+                    `${d.exp} years’ experience · ${d.loc}`;
+
+                const book = document.createElement("a");
+                book.className = "btn";
+                book.textContent = "Book Appointment";
+
+                const params = new URLSearchParams();
+                params.set("doctor", d.id);
+                params.set("doctorName", d.n);
+                params.set("specialty", d.s);
+                params.set("location", d.loc);
+
+                book.href = "book-appointment.html?" + params.toString();
+
+                card.appendChild(heading);
+                card.appendChild(tag);
+                card.appendChild(about);
+                card.appendChild(details);
+                card.appendChild(book);
+
+                results.appendChild(card);
+            });
+        }
+
+        document.getElementById("search")
+            .addEventListener("input", showDoctors);
+
+        specialty.addEventListener("change", showDoctors);
+
+        showDoctors();
+    </script>
+
+</body>
+</html>

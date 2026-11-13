@@ -1,0 +1,461 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Appointments | Hope Hospital</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
+
+<style>
+:root {
+    --bg: #f7f4fc;
+    --card: #fff;
+    --ink: #1e1530;
+    --mute: #675c7d;
+    --p: #5b2c91;
+    --soft: #efe8f8;
+    --line: #ddd0ee;
+    --green: #176b3a;
+    --greenbg: #def3e5;
+    --red: #a4262c;
+    --redbg: #fbe3e3;
+    --orange: #9a5b00;
+    --orangebg: #fff0d5;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.5 Figtree, Arial, sans-serif;
+}
+
+header {
+    background: var(--p);
+    color: white;
+    padding: 15px 20px;
+}
+
+.bar {
+    max-width: 1100px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.brand {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 9px 12px;
+    border-radius: 9px;
+}
+
+nav a:hover,
+nav a.active {
+    background: #ffffff30;
+}
+
+nav .logout {
+    background: #a4262c;
+}
+
+main {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 20px 50px;
+}
+
+h1 {
+    margin-bottom: 5px;
+    font-size: 30px;
+}
+
+.subtitle {
+    color: var(--mute);
+    margin-top: 0;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 18px;
+}
+
+.appointment {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+}
+
+.details p {
+    margin: 8px 0;
+}
+
+.status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.approved {
+    background: var(--greenbg);
+    color: var(--green);
+}
+
+.pending {
+    background: var(--orangebg);
+    color: var(--orange);
+}
+
+.rejected,
+.declined {
+    background: var(--redbg);
+    color: var(--red);
+}
+
+.reschedule {
+    background: var(--soft);
+    color: var(--p);
+}
+
+.suggestion {
+    background: #f5effc;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 18px;
+}
+
+.suggestion h3 {
+    margin-top: 0;
+    color: var(--p);
+}
+
+button,
+.btn {
+    border: 0;
+    border-radius: 9px;
+    padding: 11px 16px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.accept {
+    background: var(--green);
+    color: white;
+}
+
+.decline {
+    background: var(--red);
+    color: white;
+}
+
+.primary {
+    background: var(--p);
+    color: white;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.empty {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.empty p {
+    color: var(--mute);
+}
+
+.muted {
+    color: var(--mute);
+    font-size: 14px;
+}
+
+.feedback {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--soft);
+}
+
+@media(max-width: 700px) {
+    .appointment {
+        grid-template-columns: 1fr;
+    }
+
+    nav {
+        width: 100%;
+    }
+
+    nav a {
+        font-size: 13px;
+        padding: 7px;
+    }
+
+    h1 {
+        font-size: 25px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="bar">
+        <div class="brand">♥ Hope Hospital</div>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="find-doctor.html">Find Doctor</a>
+            <a href="appointments.html" class="active">Appointments</a>
+            <a href="reminders.html">Reminders</a>
+            <a href="staff-schedule.html">Staff Schedule</a>
+            <a href="sign-in.html" class="logout" onclick="logout(); return false;">Sign Out</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+
+    <h1>My Appointments</h1>
+    <p class="subtitle">
+        View your bookings and check responses from your doctors.
+    </p>
+
+    <div id="appointmentList"></div>
+
+</main>
+
+<script>
+function logout() {
+    localStorage.removeItem("hope-current-user");
+    localStorage.removeItem("loggedInUser");
+    window.location.href = "sign-in.html";
+}
+
+function getAppointments() {
+    return JSON.parse(localStorage.getItem("hope-appointments") || "[]");
+}
+
+function saveAppointments(appointments) {
+    localStorage.setItem("hope-appointments", JSON.stringify(appointments));
+}
+
+function getCurrentPatient() {
+    const user = JSON.parse(localStorage.getItem("hope-current-user") || "null");
+
+    if (user) {
+        return user.id || user.email || user.username || user.name || "";
+    }
+
+    return localStorage.getItem("loggedInUser") || "";
+}
+
+function getPatientAppointments() {
+    const appointments = getAppointments();
+    const patient = getCurrentPatient();
+
+    if (!patient) {
+        return appointments;
+    }
+
+    return appointments.filter(a => {
+        const owner = a.patientId || a.patientEmail || a.patientUsername || a.patient;
+        return String(owner || "") === String(patient);
+    });
+}
+
+function showDate(date) {
+    if (!date) return "Not specified";
+
+    return new Date(date + "T12:00:00").toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    });
+}
+
+function statusClass(status) {
+    if (status === "Approved") return "approved";
+    if (status === "Rejected" || status === "Declined") return "rejected";
+    if (status === "Reschedule Requested") return "reschedule";
+    return "pending";
+}
+
+function acceptTime(id) {
+    const appointments = getAppointments();
+    const appointment = appointments.find(a => String(a.id) === String(id));
+
+    if (!appointment || !appointment.suggestedTime) return;
+
+    appointment.date = appointment.suggestedDate || appointment.date;
+    appointment.time = appointment.suggestedTime;
+
+    appointment.status = "Approved";
+    appointment.patientResponse = "Accepted Suggested Time";
+    appointment.suggestedDate = "";
+    appointment.suggestedTime = "";
+
+    saveAppointments(appointments);
+
+    addReminder("Your new appointment time has been accepted.");
+
+    renderAppointments();
+}
+
+function declineTime(id) {
+    const appointments = getAppointments();
+    const appointment = appointments.find(a => String(a.id) === String(id));
+
+    if (!appointment || !appointment.suggestedTime) return;
+
+    appointment.status = "Reschedule Declined";
+    appointment.patientResponse = "Declined Suggested Time";
+    appointment.suggestedDate = "";
+    appointment.suggestedTime = "";
+
+    saveAppointments(appointments);
+
+    addReminder("You declined the doctor's suggested appointment time. Please contact the hospital to arrange another time.");
+
+    renderAppointments();
+}
+
+function addReminder(message) {
+    let reminders = JSON.parse(localStorage.getItem("hope-reminders") || "[]");
+
+    reminders.unshift({
+        id: Date.now(),
+        text: message,
+        when: "Just now",
+        unread: true
+    });
+
+    localStorage.setItem("hope-reminders", JSON.stringify(reminders));
+}
+
+function renderAppointments() {
+    const container = document.getElementById("appointmentList");
+    const appointments = getPatientAppointments();
+
+    if (!appointments.length) {
+        container.innerHTML = `
+            <div class="card empty">
+                <h2>No appointments found</h2>
+                <p>You have not booked any appointments yet.</p>
+                <a href="find-doctor.html" class="btn primary">Find a Doctor</a>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = appointments.map(a => {
+        const status = a.status || "Pending";
+        const doctorName = a.doctorName || a.doctor || a.docName || "Doctor";
+        const suggestedTime = a.suggestedTime || "";
+        const suggestedDate = a.suggestedDate || a.date;
+
+        return `
+            <div class="card">
+                <div class="appointment">
+                    <div class="details">
+                        <h2>${doctorName}</h2>
+
+                        <p><strong>Appointment date:</strong> ${showDate(a.date)}</p>
+                        <p><strong>Appointment time:</strong> ${a.time || "Not specified"}</p>
+                        <p><strong>Specialty:</strong> ${a.specialty || a.department || "Not specified"}</p>
+                        <p><strong>Reason:</strong> ${a.reason || a.message || "General consultation"}</p>
+                    </div>
+
+                    <div>
+                        <span class="status ${statusClass(status)}">${status}</span>
+                    </div>
+                </div>
+
+                ${status === "Reschedule Requested" && suggestedTime ? `
+                    <div class="suggestion">
+                        <h3>Doctor's Suggested Time</h3>
+                        <p>Your doctor has requested a change to your appointment.</p>
+                        <p><strong>Suggested date:</strong> ${showDate(suggestedDate)}</p>
+                        <p><strong>Suggested time:</strong> ${suggestedTime}</p>
+
+                        <div class="actions">
+                            <button class="accept" onclick="acceptTime('${a.id}')">
+                                Accept Suggested Time
+                            </button>
+
+                            <button class="decline" onclick="declineTime('${a.id}')">
+                                Decline
+                            </button>
+                        </div>
+                    </div>
+                ` : ""}
+
+                ${status === "Approved" ? `
+                    <div class="feedback">
+                        <strong>Doctor's feedback:</strong>
+                        Your appointment has been approved.
+                    </div>
+                ` : ""}
+
+                ${status === "Rejected" ? `
+                    <div class="feedback">
+                        <strong>Doctor's feedback:</strong>
+                        ${a.doctorFeedback || "Your appointment was not approved. Please contact the hospital."}
+                    </div>
+                ` : ""}
+
+                ${status === "Reschedule Declined" ? `
+                    <div class="feedback">
+                        You declined the suggested time. Your appointment needs a new arrangement.
+                    </div>
+                ` : ""}
+
+                ${status === "Pending" ? `
+                    <div class="feedback">
+                        Your appointment is waiting for the doctor's response.
+                    </div>
+                ` : ""}
+            </div>
+        `;
+    }).join("");
+}
+
+renderAppointments();
+</script>
+
+</body>
+</html>

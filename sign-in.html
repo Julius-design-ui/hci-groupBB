@@ -1,0 +1,426 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign In | Hope Hospital</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f7f4fc;
+            color: #1e1530;
+            font: 16px/1.5 Figtree, Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 950px;
+            background: white;
+            border-radius: 22px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            box-shadow: 0 10px 35px #5b2c9115;
+        }
+
+        .left {
+            background: linear-gradient(135deg, #5b2c91, #8a52c9);
+            color: white;
+            padding: 45px 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        .left h1 {
+            font-size: 34px;
+            line-height: 1.2;
+            margin: 0 0 15px;
+        }
+
+        .left p {
+            color: #eee2ff;
+            margin: 0;
+        }
+
+        .right {
+            padding: 40px;
+        }
+
+        h2 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        .sub {
+            color: #675c7d;
+            margin: 0 0 25px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #efe8f8;
+            padding: 5px;
+            border-radius: 12px;
+            margin-bottom: 22px;
+        }
+
+        .tabs button {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 10px;
+            border-radius: 9px;
+            color: #5b2c91;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .tabs button.active {
+            background: #5b2c91;
+            color: white;
+        }
+
+        .role {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .role button {
+            padding: 15px;
+            border: 2px solid #ddd0ee;
+            background: white;
+            color: #675c7d;
+            border-radius: 12px;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 600;
+        }
+
+        .role button.active {
+            border-color: #5b2c91;
+            background: #efe8f8;
+            color: #5b2c91;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd0ee;
+            border-radius: 10px;
+            font: inherit;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #5b2c91;
+        }
+
+        .submit {
+            width: 100%;
+            background: #5b2c91;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 13px;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .submit:hover {
+            background: #7b46b8;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            color: #5b2c91;
+            text-decoration: none;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+
+        .message {
+            color: #176b3a;
+            font-weight: 600;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        @media(max-width:700px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .left {
+                padding: 25px;
+            }
+
+            .left h1 {
+                font-size: 27px;
+            }
+
+            .right {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="left">
+            <div class="brand">♥ Hope Hospital</div>
+
+            <h1>Your Health,<br>Our Priority.</h1>
+
+            <p>
+                Welcome to Hope Hospital's online appointment system.
+                Sign in or create an account to manage your hospital
+                appointments with ease.
+            </p>
+        </div>
+
+        <div class="right">
+
+            <h2 id="heading">Welcome Back</h2>
+            <p class="sub" id="subtitle">Sign in to your account</p>
+
+            <div class="tabs">
+                <button class="active" id="signinTab" onclick="showForm('signin')">
+                    Sign In
+                </button>
+
+                <button id="signupTab" onclick="showForm('signup')">
+                    Sign Up
+                </button>
+            </div>
+
+            <div class="role">
+                <button class="active" id="patientBtn" onclick="chooseRole('Patient')">
+                    ♙ Patient
+                </button>
+
+                <button id="doctorBtn" onclick="chooseRole('Doctor')">
+                    ♡ Doctor
+                </button>
+            </div>
+
+            <form id="authForm">
+
+                <div id="signupFields" style="display:none">
+
+                    <label for="fullname">Full Name</label>
+                    <input type="text" id="fullname" placeholder="Enter your full name">
+
+                    <div id="doctorFields" style="display:none">
+
+                        <label for="specialty">Specialization</label>
+                        <select id="specialty">
+                            <option value="">Select specialization</option>
+                            <option>General Medicine</option>
+                            <option>Cardiology</option>
+                            <option>Paediatrics</option>
+                            <option>Dermatology</option>
+                            <option>Gynaecology</option>
+                            <option>Orthopaedics</option>
+                            <option>Eye Clinic</option>
+                        </select>
+
+                        <label for="staffid">Staff ID</label>
+                        <input type="text" id="staffid" placeholder="Enter your staff ID">
+
+                    </div>
+
+                </div>
+
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="Enter your email address" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+
+                <div id="confirmField" style="display:none">
+
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm your password">
+
+                </div>
+
+                <button type="submit" class="submit" id="submitBtn">
+                    Sign In
+                </button>
+
+                <p class="message" id="message"></p>
+
+            </form>
+
+            <a href="index.html" class="back">← Back to Home</a>
+
+        </div>
+
+    </div>
+
+    <script>
+        let currentRole = "Patient";
+        let currentForm = "signin";
+
+        function showForm(type) {
+            currentForm = type;
+
+            document.getElementById("signinTab").classList.toggle("active", type === "signin");
+            document.getElementById("signupTab").classList.toggle("active", type === "signup");
+
+            document.getElementById("signupFields").style.display =
+                type === "signup" ? "block" : "none";
+
+            document.getElementById("confirmField").style.display =
+                type === "signup" ? "block" : "none";
+
+            document.getElementById("heading").textContent =
+                type === "signin" ? "Welcome Back" : "Create Account";
+
+            document.getElementById("subtitle").textContent =
+                type === "signin" ? "Sign in to your account" : "Register for Hope Hospital";
+
+            document.getElementById("submitBtn").textContent =
+                type === "signin" ? "Sign In" : "Create Account";
+
+            document.getElementById("message").textContent = "";
+        }
+
+        function chooseRole(role) {
+            currentRole = role;
+
+            document.getElementById("patientBtn").classList.toggle("active", role === "Patient");
+            document.getElementById("doctorBtn").classList.toggle("active", role === "Doctor");
+
+            document.getElementById("doctorFields").style.display =
+                role === "Doctor" && currentForm === "signup" ? "block" : "none";
+
+            document.getElementById("message").textContent = "";
+        }
+
+        document.getElementById("authForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+
+            let users = JSON.parse(localStorage.getItem("hope-users") || "[]");
+
+            if (currentForm === "signup") {
+                const fullname = document.getElementById("fullname").value.trim();
+                const confirmPassword = document.getElementById("confirmPassword").value;
+
+                if (!fullname) {
+                    document.getElementById("message").textContent =
+                        "Please enter your full name.";
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    document.getElementById("message").textContent =
+                        "Passwords do not match.";
+                    return;
+                }
+
+                if (users.some(user =>
+                    user.email.toLowerCase() === email.toLowerCase() &&
+                    user.role === currentRole
+                )) {
+                    document.getElementById("message").textContent =
+                        "Account already exists.";
+                    return;
+                }
+
+                const user = {
+                    fullname: fullname,
+                    email: email,
+                    password: password,
+                    role: currentRole,
+                    specialty: currentRole === "Doctor"
+                        ? document.getElementById("specialty").value
+                        : "",
+                    staffid: currentRole === "Doctor"
+                        ? document.getElementById("staffid").value
+                        : ""
+                };
+
+                users.push(user);
+
+                localStorage.setItem("hope-users", JSON.stringify(users));
+
+                document.getElementById("message").textContent =
+                    "Account created successfully. You can now sign in.";
+
+                showForm("signin");
+
+            } else {
+
+                const user = users.find(
+                    user => user.email.toLowerCase() === email.toLowerCase() &&
+                    user.password === password &&
+                    user.role === currentRole
+                );
+
+                if (user) {
+
+                    localStorage.setItem("hope-current-user", JSON.stringify(user));
+                    localStorage.setItem("loggedInUser", JSON.stringify(user));
+
+                    document.getElementById("message").textContent =
+                        "Welcome, " + user.fullname + "!";
+
+                    if (user.role === "Doctor") {
+                        window.location.href = "doctor-home.html";
+                    } else if (user.role === "Patient") {
+                        window.location.href = "index.html";
+                    }
+
+                } else {
+                    document.getElementById("message").textContent =
+                        "Invalid email, password or role.";
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

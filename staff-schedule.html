@@ -1,0 +1,426 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Staff Schedule | Hope Hospital</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
+
+    <style>
+        :root {
+            --bg: #f7f4fc;
+            --card: #fff;
+            --ink: #1e1530;
+            --mute: #675c7d;
+            --p: #5b2c91;
+            --p2: #7b46b8;
+            --soft: #efe8f8;
+            --line: #ddd0ee;
+            --ok: #176b3a;
+            --okbg: #def3e5;
+            --bad: #a4262c;
+            --badbg: #fbe3e3;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font: 16px/1.5 Figtree, Arial, sans-serif;
+        }
+
+        header {
+            background: var(--p);
+            color: white;
+            padding: 14px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .bar {
+            max-width: 1100px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            font-size: 25px;
+            font-weight: 700;
+        }
+
+        nav {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-left: auto;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 9px 12px;
+            border-radius: 10px;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: #ffffff30;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 25px auto;
+            padding: 0 20px 50px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin: 0 0 8px;
+        }
+
+        h2 {
+            font-size: 22px;
+            margin: 25px 0 12px;
+        }
+
+        .sub {
+            color: var(--mute);
+            margin-top: 0;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #5b2c91, #8a52c9);
+            color: white;
+            border-radius: 22px;
+            padding: 28px;
+            margin-bottom: 22px;
+        }
+
+        button,
+        .btn {
+            background: var(--p);
+            color: white;
+            border: 2px solid var(--p);
+            border-radius: 10px;
+            padding: 10px 16px;
+            min-height: 42px;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        button.secondary,
+        .btn.secondary {
+            background: transparent;
+            color: var(--p);
+        }
+
+        button.danger {
+            background: transparent;
+            color: var(--bad);
+            border-color: var(--bad);
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--line);
+            border-radius: 10px;
+            background: white;
+            color: #1e1530;
+            font: inherit;
+            margin: 5px 0 14px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .tag {
+            background: var(--soft);
+            color: var(--p);
+            padding: 3px 9px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .status {
+            font-weight: 700;
+            color: var(--ok);
+        }
+
+        .muted {
+            color: var(--mute);
+            font-size: 14px;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: var(--p);
+            color: white;
+            text-align: left;
+            padding: 11px;
+        }
+
+        td {
+            padding: 11px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        @media(max-width:700px) {
+            nav {
+                margin-left: 0;
+                width: 100%;
+                justify-content: space-around;
+            }
+
+            nav a {
+                font-size: 13px;
+                padding: 7px;
+            }
+
+            main {
+                padding-bottom: 30px;
+            }
+
+            .hero {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="bar">
+            <div class="brand">♥ Hope Hospital</div>
+
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="find-doctor.html">Find Doctor</a>
+                <a href="appointments.html">Appointments</a>
+                <a href="reminders.html">Reminders</a>
+                <a href="staff-schedule.html">Staff Schedule</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <h1>Staff Schedule</h1>
+        <p class="sub">Sample daily appointment schedule for hospital staff.</p>
+
+        <label for="date">Choose a date</label>
+        <input id="date" type="date">
+
+        <div id="schedule" class="card" style="overflow-x:auto;margin-top:12px"></div>
+    </main>
+
+    <script>
+        const DOCS = [
+            {
+                id: 1,
+                n: "Dr. Palesa Mokoena",
+                s: "General Medicine",
+                loc: "Block A, Room 12",
+                exp: 12,
+                about: "Family health, check-ups and chronic care."
+            },
+            {
+                id: 2,
+                n: "Dr. Thabo Letsie",
+                s: "Cardiology",
+                loc: "Block B, Room 4",
+                exp: 18,
+                about: "Heart health, blood pressure and ECG tests."
+            },
+            {
+                id: 3,
+                n: "Dr. Naledi Ramone",
+                s: "Paediatrics",
+                loc: "Children’s Wing, Room 2",
+                exp: 9,
+                about: "Care for babies, children and teenagers."
+            },
+            {
+                id: 4,
+                n: "Dr. Karabo Sehloho",
+                s: "Dermatology",
+                loc: "Block C, Room 7",
+                exp: 11,
+                about: "Skin, hair and nail conditions."
+            },
+            {
+                id: 5,
+                n: "Dr. Lineo Matsoso",
+                s: "Gynaecology",
+                loc: "Women’s Clinic, Room 3",
+                exp: 15,
+                about: "Women’s health and antenatal care."
+            },
+            {
+                id: 6,
+                n: "Dr. Tumelo Khama",
+                s: "General Medicine",
+                loc: "Block A, Room 15",
+                exp: 7,
+                about: "General consultations and follow-ups."
+            },
+            {
+                id: 7,
+                n: "Dr. Mpho Rakoto",
+                s: "Orthopaedics",
+                loc: "Block B, Room 9",
+                exp: 14,
+                about: "Bones, joints and sports injuries."
+            },
+            {
+                id: 8,
+                n: "Dr. Ayanda Nkosi",
+                s: "Eye Clinic",
+                loc: "Block C, Room 1",
+                exp: 10,
+                about: "Eye tests and eye infections."
+            }
+        ];
+
+        const TIMES = [
+            "08:30",
+            "09:00",
+            "09:30",
+            "10:30",
+            "11:00",
+            "13:30",
+            "14:00",
+            "15:30",
+            "16:00"
+        ];
+
+        function getAppointments() {
+            return JSON.parse(localStorage.getItem("hope-appointments") || "[]");
+        }
+
+        function saveAppointments(a) {
+            localStorage.setItem("hope-appointments", JSON.stringify(a));
+        }
+
+        function getReminders() {
+            return JSON.parse(localStorage.getItem("hope-reminders") || "[]");
+        }
+
+        function saveReminders(a) {
+            localStorage.setItem("hope-reminders", JSON.stringify(a));
+        }
+
+        function doctor(id) {
+            return DOCS.find(d => d.id == id);
+        }
+
+        function dateLabel(date) {
+            return new Date(date + "T12:00:00").toLocaleDateString("en-GB", {
+                weekday: "short",
+                day: "numeric",
+                month: "short",
+                year: "numeric"
+            });
+        }
+
+        function makeReminder(text) {
+            let r = getReminders();
+
+            r.unshift({
+                id: Date.now(),
+                text,
+                when: "Just now",
+                unread: true
+            });
+
+            saveReminders(r);
+        }
+
+        document.getElementById("date").value = new Date().toISOString().slice(0, 10);
+
+        function showSchedule() {
+            const date = document.getElementById("date").value;
+            const ap = getAppointments().filter(a => a.date === date);
+            const rows = ap.sort((a, b) => a.time.localeCompare(b.time));
+
+            document.getElementById("schedule").innerHTML = rows.length
+                ? `<table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rows.map(a => `
+                            <tr>
+                                <td>${a.time}</td>
+                                <td>Patient</td>
+                                <td>${doctor(a.doc).n}</td>
+                                <td>${a.reason}</td>
+                                <td>${a.status}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>`
+                : `<p>No appointments saved for this date. This schedule displays bookings saved in this browser.</p>`;
+        }
+
+        document.getElementById("date").addEventListener("change", showSchedule);
+
+        showSchedule();
+    </script>
+
+</body>
+</html>
