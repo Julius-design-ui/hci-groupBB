@@ -325,8 +325,9 @@ if (typeof user === "string") {
 
 const params = new URLSearchParams(window.location.search);
 
-const doctorId = params.get("doctor") || "";
-const selectedDoctor = params.get("doctorName") || "";
+const doctorId = params.get("doctor") || params.get("doctorId") || "";
+const selectedDoctor = params.get("doctorName") || params.get("name") || "";
+const selectedDoctorEmail = (params.get("doctorEmail") || params.get("email") || "").toLowerCase().trim();
 const selectedSpecialty = params.get("specialty") || "";
 const selectedLocation = params.get("location") || "";
 
@@ -409,7 +410,7 @@ document.getElementById("bookingForm").addEventListener("submit", function(e) {
         doctorId: doctorId,
         doctor: selectedDoctor,
         doctorName: selectedDoctor,
-        doctorEmail: "",
+        doctorEmail: selectedDoctorEmail,
         specialty: selectedSpecialty,
         location: selectedLocation,
         date: date,
